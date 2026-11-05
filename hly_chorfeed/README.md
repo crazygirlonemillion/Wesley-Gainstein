@@ -2,7 +2,9 @@
 
 A stereo feedback chorus, delay, filter and distortion effect with a signed 3 × 3 routing matrix. The interface uses original programmatically drawn controls inspired by the charcoal, slate-blue and amber appearance of the legacy Morphine interface. No Morphine code, images or fonts are bundled. There is no pitch tracking.
 
-**This download is a source/build kit, not a precompiled macOS plugin or installer.** A real macOS build is required to produce the universal VST3, Audio Unit and `.pkg`. The supplied build and packaging scripts do that on a Mac; a GitHub Actions workflow is included for a hosted Mac runner. No Apple Developer signing identity or notarization service is configured.
+**Prebuilt Mac installer:** [download the GitHub artifact](https://github.com/crazygirlonemillion/Wesley-Gainstein/actions/runs/42123470953/artifacts/13460365857), unzip it, and open the included .pkg. No compilation is required. It contains universal Apple Silicon / Intel VST3 and Audio Unit plugins. The installer is unsigned and not Apple notarized.
+
+This folder contains the corresponding source and build scripts. The [Mac build and native Audio Unit validation passed](https://github.com/crazygirlonemillion/Wesley-Gainstein/actions/runs/42123470953).
 
 ## Build and install on a Mac
 
@@ -62,7 +64,7 @@ Pitch-follow controls are intentionally absent. Polyphonic and monophonic source
 
 ## Build with a hosted Mac
 
-The included `.github/workflows/macos.yml` can build on GitHub's `macos-14` runner. Add the project to a repository you control, then run **Build macOS installer** from its Actions tab. The run uploads an unsigned universal `.pkg` artifact. This kit does not create a repository, start a remote build, or publish a release automatically.
+The included `.github/workflows/macos.yml` can build on GitHub's `macos-latest` runner. Add the project to a repository you control, then run **Build macOS installer** from its Actions tab. The run uploads an unsigned universal `.pkg` artifact. This kit does not create a repository, start a remote build, or publish a release automatically.
 
 ## Source and licensing
 

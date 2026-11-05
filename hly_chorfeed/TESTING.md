@@ -11,7 +11,7 @@ Checked on Linux x86_64 with GCC 14 and pinned JUCE 8.0.6:
 - Two stereo 48 kHz audio examples were rendered from the engine. Each contains six seconds dry, six seconds processed, and a three-second tail. The dub example uses a separate illustrative routing.
 - Mac shell scripts passed `bash -n`; the installer distribution XML parsed successfully. The packaging script refuses to run on Linux and requires actual universal Mac binaries.
 
-**Not checked:** macOS compilation, Apple Silicon/Intel execution, Audio Unit validation, installation, DAW scanning/automation in a real host, Developer ID signing or notarization. No precompiled macOS plugin or `.pkg` is included in this source kit.
+**Not checked:** execution on Intel hardware, manual scanning/automation in individual DAWs, installer execution on a user's Mac, Developer ID signing or notarization.
 
 On a Mac, run `Build and Install.command` to build and test the project and generate the installer. After installing, Audio Unit validation can be run manually:
 
@@ -19,4 +19,15 @@ On a Mac, run `Build and Install.command` to build and test the project and gene
 auval -v aufx Hlcf Hlyy
 ```
 
-The GitHub workflow is a build recipe; no hosted Mac build has been run for this delivery.
+## GitHub macOS verification
+
+[Successful build and validation](https://github.com/crazygirlonemillion/Wesley-Gainstein/actions/runs/42123470953), 2026-11-05, commit df3ce4ca0818b2cdb9d8781233d380d6a71145ad:
+
+- macOS 26.6.2 ARM64 runner, AppleClang 21.
+- Universal ARM64 and x86_64 VST3 and AU compiled; both CTest suites passed.
+- Both binary architectures verified; staged plugin signatures verified.
+- Real unsigned .pkg created with pkgbuild/productbuild.
+- Native Audio Unit validation passed after refreshing AudioComponentRegistrar.
+- [Installer artifact uploaded](https://github.com/crazygirlonemillion/Wesley-Gainstein/actions/runs/42123470953/artifacts/13460365857).
+
+The x86_64 slices compiled successfully; Intel execution was not tested. The local preview remains a Linux capture.
