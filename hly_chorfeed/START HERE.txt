@@ -1,0 +1,27 @@
+hly_chorfeed 0.1.0 — macOS build kit
+
+This is the plugin's source and build tools. It does not contain a compiled
+macOS plugin or a ready-made installer. The development workspace was Linux.
+
+On your Mac:
+1. Extract the ZIP to a writable folder, for example Documents.
+2. If needed, run this in Terminal: xcode-select --install
+   Complete Apple's Command Line Tools installation.
+3. Double-click "Build and Install.command".
+   It downloads the build dependency, compiles universal Intel/Apple Silicon
+   VST3 and Audio Unit plugins, tests them, and creates a .pkg in dist/.
+4. When Apple's Installer opens, follow its prompts. Reopen your DAW afterward.
+
+The first build needs internet and may take several minutes. CMake is installed
+locally if needed. See README.md for requirements and troubleshooting.
+
+There is no pitch tracking. All nine feedback routes are bipolar, from rows
+to columns. INPUT SEND controls which processors receive the original input;
+OUTPUT MIX controls which processors reach the wet output. MIX adds dry input.
+
+Audio examples, if present in examples/, play six seconds dry, six seconds
+processed, then a three-second tail. The dub example is an alternate routing,
+not an exact render of the factory Echo / Dub Garden preset.
+
+These are unsigned personal builds. macOS build, DAW scanning and installer
+execution have not been verified in the Linux development environment.

@@ -1,0 +1,36 @@
+name: Build hly_chorfeed macOS installer
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/hly-chorfeed-macos]
+    paths:
+      - 'hly_chorfeed/**'
+      - '.github/workflows/hly-chorfeed-macos.yml'
+permissions:
+  contents: read
+concurrency:
+  group: hly-chorfeed-macos-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  macos:
+    runs-on: macos-14
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test universal VST3 and Audio Unit, then package
+        working-directory: hly_chorfeed
+        run: bash scripts/build-macos.sh
+      - name: Validate native Audio Unit
+        shell: bash
+        run: |
+          mkdir -p "$HOME/Library/Audio/Plug-Ins/Components"
+          ditto hly_chorfeed/build-macos/HlyChorfeed_artefacts/Release/AU/hly_chorfeed.component "$HOME/Library/Audio/Plug-Ins/Components/hly_chorfeed.component"
+          codesign --force --deep --sign - "$HOME/Library/Audio/Plug-Ins/Components/hly_chorfeed.component"
+          auval -v aufx Hlcf Hlyy
+      - name: Upload universal Mac installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: hly_chorfeed-macOS-universal
+          path: hly_chorfeed/dist/hly_chorfeed-0.1.0-macOS-universal.pkg
+          if-no-files-found: error
+          retention-days: 30

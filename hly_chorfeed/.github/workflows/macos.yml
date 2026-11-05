@@ -1,0 +1,22 @@
+name: Build macOS installer
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  macos:
+    runs-on: macos-14
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test universal VST3 and Audio Unit
+        run: bash scripts/build-macos.sh
+      - name: Upload unsigned macOS installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: hly_chorfeed-macOS-universal
+          path: dist/hly_chorfeed-0.1.0-macOS-universal.pkg
+          if-no-files-found: error
+          retention-days: 30

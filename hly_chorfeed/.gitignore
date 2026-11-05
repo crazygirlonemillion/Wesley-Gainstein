@@ -1,0 +1,6 @@
+/build*/
+/dist/
+/.tools/
+/_deps/
+*.wav
+.DS_Store
