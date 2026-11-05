@@ -1,0 +1,6 @@
+build/
+build-*/
+dist/
+tests/render_test
+tests/*.wav
+.DS_Store

@@ -1,0 +1,61 @@
+name: Build HardKick (macOS VST3)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-mac:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache JUCE download
+        uses: actions/cache@v4
+        with:
+          path: build/_deps
+          key: juce-8.0.4-${{ runner.os }}
+
+      - name: Configure (universal binary: Apple Silicon + Intel)
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+
+      - name: Build
+        run: cmake --build build --config Release -j 4
+
+      - name: Sign (ad-hoc) and zip
+        run: |
+          set -e
+          PLUG="build/HardKick_artefacts/Release/VST3/HardKick.vst3"
+          ls -la "$PLUG/Contents/MacOS"
+          lipo -info "$PLUG/Contents/MacOS/HardKick"
+          codesign --force --deep --sign - "$PLUG"
+          mkdir -p dist
+          ditto -c -k --keepParent "$PLUG" dist/HardKick-mac.zip
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HardKick-mac
+          path: dist/HardKick-mac.zip
+
+      - name: Publish release (download link)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: HardKick build ${{ github.run_number }}
+          make_latest: true
+          files: dist/HardKick-mac.zip
+          body: |
+            HardKick VST3 for macOS (Apple Silicon + Intel).
+
+            Install:
+            1. Unzip and move `HardKick.vst3` to `~/Library/Audio/Plug-Ins/VST3/`
+            2. In Terminal run: `xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/HardKick.vst3`
+            3. In FL Studio: Options > Manage plugins > Find more plugins, then load HardKick as an instrument.
