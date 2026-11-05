@@ -18,6 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build and test universal VST3 and Audio Unit, then package
+        id: build
         working-directory: hly_chorfeed
         run: bash scripts/build-macos.sh
       - name: Validate native Audio Unit
@@ -26,8 +27,14 @@ jobs:
           mkdir -p "$HOME/Library/Audio/Plug-Ins/Components"
           ditto hly_chorfeed/build-macos/HlyChorfeed_artefacts/Release/AU/hly_chorfeed.component "$HOME/Library/Audio/Plug-Ins/Components/hly_chorfeed.component"
           codesign --force --deep --sign - "$HOME/Library/Audio/Plug-Ins/Components/hly_chorfeed.component"
+          plutil -p "$HOME/Library/Audio/Plug-Ins/Components/hly_chorfeed.component/Contents/Info.plist"
+          codesign --verify --deep --strict "$HOME/Library/Audio/Plug-Ins/Components/hly_chorfeed.component"
+          killall -9 AudioComponentRegistrar 2>/dev/null || true
+          sleep 3
+          auval -a
           auval -v aufx Hlcf Hlyy
       - name: Upload universal Mac installer
+        if: always() && steps.build.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: hly_chorfeed-macOS-universal
