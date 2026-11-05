@@ -39,11 +39,29 @@ jobs:
           mkdir -p dist
           ditto -c -k --keepParent "$PLUG" dist/HardKick-mac.zip
 
+      - name: Build double-click installer (.pkg)
+        run: |
+          set -e
+          PLUG="build/HardKick_artefacts/Release/VST3/HardKick.vst3"
+          mkdir -p pkgroot
+          cp -R "$PLUG" pkgroot/
+          pkgbuild --analyze --root pkgroot components.plist
+          plutil -replace 0.BundleIsRelocatable -bool NO components.plist
+          plutil -replace 0.BundleOverwriteAction -string upgrade components.plist
+          pkgbuild --root pkgroot \
+            --component-plist components.plist \
+            --identifier com.spencer.hardkick.vst3 \
+            --version "1.0.${{ github.run_number }}" \
+            --install-location /Library/Audio/Plug-Ins/VST3 \
+            component.pkg
+          productbuild --package component.pkg dist/HardKick-Installer.pkg
+          pkgutil --payload-files dist/HardKick-Installer.pkg | head -20
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: HardKick-mac
-          path: dist/HardKick-mac.zip
+          path: dist/*
 
       - name: Publish release (download link)
         uses: softprops/action-gh-release@v2
@@ -51,11 +69,13 @@ jobs:
           tag_name: build-${{ github.run_number }}
           name: HardKick build ${{ github.run_number }}
           make_latest: true
-          files: dist/HardKick-mac.zip
+          files: |
+            dist/HardKick-Installer.pkg
+            dist/HardKick-mac.zip
           body: |
             HardKick VST3 for macOS (Apple Silicon + Intel).
 
-            Install:
-            1. Unzip and move `HardKick.vst3` to `~/Library/Audio/Plug-Ins/VST3/`
-            2. In Terminal run: `xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/HardKick.vst3`
-            3. In FL Studio: Options > Manage plugins > Find more plugins, then load HardKick as an instrument.
+            Easiest: download HardKick-Installer.pkg and double-click it.
+            If macOS says it can't verify the developer, open System Settings > Privacy & Security,
+            scroll down and click "Open Anyway", then run the installer.
+            Then in FL Studio: Options > Manage plugins > Find more plugins.

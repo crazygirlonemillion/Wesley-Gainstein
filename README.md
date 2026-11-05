@@ -2,16 +2,16 @@
 
 A hardstyle kick generator VST3 instrument for macOS (Apple Silicon + Intel).
 
-**Download the latest build:** [HardKick-mac.zip](../../releases/latest/download/HardKick-mac.zip)
+**Download:** [HardKick-Installer.pkg](../../releases/latest/download/HardKick-Installer.pkg) (double-click installer) · [HardKick-mac.zip](../../releases/latest/download/HardKick-mac.zip) (manual)
 
 ## Install
 
-1. Unzip and move `HardKick.vst3` into `~/Library/Audio/Plug-Ins/VST3/`
-2. The plugin isn't signed by Apple, so clear the download quarantine once in Terminal:
-   ```
-   xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/HardKick.vst3
-   ```
-3. FL Studio: **Options → Manage plugins → Find more plugins**, then add HardKick to a channel as an instrument.
+1. Double-click **HardKick-Installer.pkg**. It installs to `/Library/Audio/Plug-Ins/VST3/`.
+   - The installer isn't signed by Apple, so the first time macOS may refuse to open it. Go to **System Settings → Privacy & Security**, scroll down, click **Open Anyway**, then run it again.
+2. FL Studio: **Options → Manage plugins → Find more plugins**, then add HardKick to a channel as an instrument.
+
+Manual install (zip): move `HardKick.vst3` into `~/Library/Audio/Plug-Ins/VST3/`, then run
+`xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/HardKick.vst3` once in Terminal.
 
 ## How it works
 
