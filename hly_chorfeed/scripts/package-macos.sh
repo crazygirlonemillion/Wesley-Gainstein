@@ -23,7 +23,7 @@ for bundle in "$VST3" "$AU"; do
         echo "Missing plugin executable: $binary" >&2
         exit 1
     fi
-    /usr/bin/lipo -verify_arch arm64 x86_64 "$binary"
+    /usr/bin/lipo "$binary" -verify_arch arm64 x86_64
 done
 
 mkdir -p "$DEST"
